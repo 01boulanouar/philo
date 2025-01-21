@@ -6,7 +6,7 @@
 /*   By: moboulan <moboulan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/01 18:52:52 by moboulan          #+#    #+#             */
-/*   Updated: 2025/01/21 01:30:00 by moboulan         ###   ########.fr       */
+/*   Updated: 2025/01/21 05:04:09 by moboulan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,15 @@ void	init_mutex(t_table *table)
 {
 	int	i;
 
+	if (pthread_mutex_init(&table->meal, NULL))
+		ft_error("failed to init meal mutex");
 	if (pthread_mutex_init(&table->print, NULL))
 		ft_error("failed to init print mutex");
 	i = 0;
 	while (i < table->n_philo)
 	{
 		if (pthread_mutex_init(&table->forks[i], NULL))
-			ft_error("failed to create philo thread");
+			ft_error("failed to create fork mutex");
 		i++;
 	}
 }
@@ -38,30 +40,32 @@ void	destroy_mutex(t_table *table)
 		i++;
 	}
 	pthread_mutex_destroy(&table->print);
+	pthread_mutex_destroy(&table->meal);
 }
 
-time_t	get_time(t_table *table)
+time_t	get_time(void)
 {
 	struct timeval	time;
 
 	gettimeofday(&time, NULL);
-	return ((time.tv_sec * 1000 + time.tv_usec / 1000) - table->start);
+	return ((time.tv_sec * 1000 + time.tv_usec / 1000));
 }
 
 void	print(char *action, t_philo *philo)
 {
-	if (philo->table->ended)
-		return ;
-	pthread_mutex_lock(&philo->table->print);
-	printf("%ld %d %s\n", get_time(philo->table), philo->id + 1, action);
-	pthread_mutex_unlock(&philo->table->print);
+	t_table	*table;
+
+	table = philo->table;
+	pthread_mutex_lock(&table->print);
+	printf("%ld %d %s\n", get_time() - table->start, philo->id + 1, action);
+	pthread_mutex_unlock(&table->print);
 }
 
-void	ft_usleep(time_t time, t_table *table)
+void	ft_usleep(time_t time)
 {
 	time_t	start;
 
-	start = get_time(table);
-	while (get_time(table) < start + time)
+	start = get_time();
+	while (get_time() < start + time)
 		usleep(500);
 }

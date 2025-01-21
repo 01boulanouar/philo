@@ -6,7 +6,7 @@
 /*   By: moboulan <moboulan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 04:23:28 by moboulan          #+#    #+#             */
-/*   Updated: 2025/01/21 02:13:27 by moboulan         ###   ########.fr       */
+/*   Updated: 2025/01/21 05:10:49 by moboulan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,26 @@
 void	*routine(void *context)
 {
 	t_philo	*philo;
-	t_table	*table;
 
 	philo = (t_philo *)context;
-	table = philo->table;
 	if (philo->id % 2)
-		ft_usleep(table->time_to_eat, table);
+		ft_usleep(philo->table->time_to_eat);
 	while (1)
 	{
-		pthread_mutex_lock(&table->forks[philo->id]);
+		pthread_mutex_lock(&philo->table->forks[philo->right]);
 		print("has taken a fork", philo);
-		pthread_mutex_lock(&table->forks[(philo->id + 1) % table->n_philo]);
+		pthread_mutex_lock(&philo->table->forks[philo->left]);
 		print("has taken a fork", philo);
 		print("is eating", philo);
-		ft_usleep(table->time_to_eat, table);
-		pthread_mutex_unlock(&table->forks[(philo->id + 1) % table->n_philo]);
-		pthread_mutex_unlock(&table->forks[philo->id]);
-		philo->last_meal = get_time(table);
+		pthread_mutex_lock(&philo->table->meal);
+		philo->last_meal = get_time();
 		philo->n_meals++;
+		pthread_mutex_unlock(&philo->table->meal);
+		ft_usleep(philo->table->time_to_eat);
+		pthread_mutex_unlock(&philo->table->forks[philo->left]);
+		pthread_mutex_unlock(&philo->table->forks[philo->right]);
 		print("is sleeping", philo);
-		ft_usleep(table->time_to_sleep, table);
+		ft_usleep(philo->table->time_to_sleep);
 		print("is thinking", philo);
 	}
 	return (NULL);
@@ -45,16 +45,17 @@ void	create_philos(t_table *table)
 	int		i;
 	t_philo	*philo;
 
-	table->ended = 0;
-	table->start = get_time(table);
+	table->start = get_time();
 	i = 0;
 	while (i < table->n_philo)
 	{
 		philo = &table->philos[i];
 		philo->id = i;
+		philo->right = i;
+		philo->left = (i + 1) % table->n_philo;
 		philo->n_meals = 0;
 		philo->table = table;
-		philo->last_meal = get_time(philo->table);
+		philo->last_meal = get_time();
 		if (pthread_create(&philo->thread, NULL, routine, philo))
 			ft_error("failed to create philo thread");
 		if (pthread_detach(table->philos[i].thread))
@@ -67,12 +68,16 @@ int	done_eating(t_table *table)
 {
 	int	i;
 	int	n_philo;
+	int	n_meals;
 
 	n_philo = 0;
 	i = 0;
 	while (i < table->n_philo)
 	{
-		if (table->philos[i].n_meals >= table->n_meals)
+		pthread_mutex_lock(&table->meal);
+		n_meals = table->philos[i].n_meals;
+		pthread_mutex_unlock(&table->meal);
+		if (n_meals >= table->n_meals)
 			n_philo++;
 		i++;
 	}
@@ -81,21 +86,23 @@ int	done_eating(t_table *table)
 
 void	monitor(t_table *table)
 {
-	int	i;
+	int		i;
+	time_t	last_meal;
 
 	while (1)
 	{
-		i = 0;
 		if (table->n_meals && done_eating(table))
 			return ;
+		i = 0;
 		while (i < table->n_philo)
 		{
-			if (get_time(table)
-				- table->philos[i].last_meal >= table->time_to_die)
+			pthread_mutex_lock(&table->meal);
+			last_meal = table->philos[i].last_meal;
+			pthread_mutex_unlock(&table->meal);
+			if (get_time() >= last_meal + table->time_to_die)
 			{
-				table->ended = 1;
 				pthread_mutex_lock(&table->print);
-				printf("%ld %d died\n", get_time(table), i + 1);
+				printf("%ld %d died\n", get_time() - table->start, i + 1);
 				return ;
 			}
 			i++;
