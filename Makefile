@@ -4,7 +4,7 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror -pthread
 RM = rm -f
 
-SRC = philo.c mutex.c parsing.c routine.c utils/number.c utils/string.c print.c
+SRC = philo.c helper.c parsing.c utils/number.c utils/string.c
 
 OBJ = $(SRC:.c=.o)
 

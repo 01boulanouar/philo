@@ -6,17 +6,46 @@
 /*   By: moboulan <moboulan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 04:23:28 by moboulan          #+#    #+#             */
-/*   Updated: 2025/01/21 00:40:11 by moboulan         ###   ########.fr       */
+/*   Updated: 2025/01/21 01:04:23 by moboulan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	*routine(void *context)
+{
+	t_philo	*philo;
+	t_table	*table;
+
+	philo = (t_philo *)context;
+	table = philo->table;
+	if (philo->id % 2)
+		ft_usleep(table->time_to_eat, table);
+	while (1)
+	{
+		pthread_mutex_lock(&table->forks[philo->id]);
+		print("has taken a fork", philo);
+		pthread_mutex_lock(&table->forks[(philo->id + 1) % table->n_philo]);
+		print("has taken a fork", philo);
+		print("is eating", philo);
+		ft_usleep(table->time_to_eat, table);
+		pthread_mutex_unlock(&table->forks[(philo->id + 1) % table->n_philo]);
+		pthread_mutex_unlock(&table->forks[philo->id]);
+		philo->last_meal = get_time(table);
+		philo->n_meals++;
+		print("is sleeping", philo);
+		ft_usleep(table->time_to_sleep, table);
+		print("is thinking", philo);
+	}
+	return (NULL);
+}
 
 void	create_philos(t_table *table)
 {
 	int		i;
 	t_philo	*philo;
 
+	table->ended = 0;
 	table->start = get_time(table);
 	i = 0;
 	while (i < table->n_philo)
@@ -60,19 +89,15 @@ void	monitor(t_table *table)
 		while (i < table->n_philo)
 		{
 			if (table->n_meals && done_eating(table))
-			{
-				destroy_mutex(table);
-				exit(0);
-			}
+				return ;
 			if (get_time(table)
 				- table->philos[i].last_meal >= table->time_to_die)
 			{
 				pthread_mutex_lock(&table->print);
 				printf("%ld %d died\n", get_time(table), i + 1);
-				destroy_mutex(table);
-				exit(0);
+				table->ended = 1;
+				return ;
 			}
-			usleep(50);
 			i++;
 		}
 	}
@@ -86,5 +111,6 @@ int	main(int argc, char **argv)
 	init_mutex(&table);
 	create_philos(&table);
 	monitor(&table);
+	destroy_mutex(&table);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: moboulan <moboulan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 04:23:42 by moboulan          #+#    #+#             */
-/*   Updated: 2025/01/19 19:27:08 by moboulan         ###   ########.fr       */
+/*   Updated: 2025/01/21 00:56:46 by moboulan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef struct s_philo
 
 typedef struct s_table
 {
+	int				ended;
 	int				n_philo;
 	int				n_meals;
 	time_t			time_to_die;
