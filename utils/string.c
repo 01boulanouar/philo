@@ -6,7 +6,7 @@
 /*   By: moboulan <moboulan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 04:24:39 by moboulan          #+#    #+#             */
-/*   Updated: 2025/01/01 17:55:15 by moboulan         ###   ########.fr       */
+/*   Updated: 2025/01/21 02:18:03 by moboulan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,4 @@ int	ft_isallspace(char *str)
 	while (ft_isspace(str[i]))
 		i++;
 	return (i == ft_strlen(str));
-}
-
-void	ft_error(char *error)
-{
-	printf("%s\n", error);
-	exit(1);
 }

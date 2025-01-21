@@ -6,7 +6,7 @@
 /*   By: moboulan <moboulan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 04:23:42 by moboulan          #+#    #+#             */
-/*   Updated: 2025/01/21 00:56:46 by moboulan         ###   ########.fr       */
+/*   Updated: 2025/01/21 02:18:22 by moboulan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # include <limits.h>
 # include <pthread.h>
 # include <stdio.h>
-# include <stdlib.h>
 # include <sys/time.h>
 # include <unistd.h>
 
@@ -49,8 +48,11 @@ int					ft_isspace(char c);
 int					ft_isallspace(char *str);
 int					ft_isint(char *str);
 long				ft_atol(char *str);
-void				handle_args(int argc, char **argv, t_table *table);
-void				ft_error(char *error);
+int					ft_error(char *error);
+void				print_usage(void);
+int					check_int(int argc, char **argv);
+int					check_range(int argc, char **argv);
+void				init_table(int argc, char **argv, t_table *table);
 
 void				init_mutex(t_table *table);
 void				destroy_mutex(t_table *table);

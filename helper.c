@@ -6,7 +6,7 @@
 /*   By: moboulan <moboulan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/01 18:52:52 by moboulan          #+#    #+#             */
-/*   Updated: 2025/01/21 01:08:22 by moboulan         ###   ########.fr       */
+/*   Updated: 2025/01/21 01:30:00 by moboulan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,13 @@ void	destroy_mutex(t_table *table)
 {
 	int	i;
 
-	pthread_mutex_destroy(&table->print);
 	i = 0;
 	while (i < table->n_philo)
 	{
 		pthread_mutex_destroy(&table->forks[i]);
 		i++;
 	}
+	pthread_mutex_destroy(&table->print);
 }
 
 time_t	get_time(t_table *table)

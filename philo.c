@@ -6,7 +6,7 @@
 /*   By: moboulan <moboulan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 04:23:28 by moboulan          #+#    #+#             */
-/*   Updated: 2025/01/21 01:04:23 by moboulan         ###   ########.fr       */
+/*   Updated: 2025/01/21 02:13:27 by moboulan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,16 +86,16 @@ void	monitor(t_table *table)
 	while (1)
 	{
 		i = 0;
+		if (table->n_meals && done_eating(table))
+			return ;
 		while (i < table->n_philo)
 		{
-			if (table->n_meals && done_eating(table))
-				return ;
 			if (get_time(table)
 				- table->philos[i].last_meal >= table->time_to_die)
 			{
+				table->ended = 1;
 				pthread_mutex_lock(&table->print);
 				printf("%ld %d died\n", get_time(table), i + 1);
-				table->ended = 1;
 				return ;
 			}
 			i++;
@@ -107,7 +107,16 @@ int	main(int argc, char **argv)
 {
 	t_table	table;
 
-	handle_args(argc, argv, &table);
+	if (argc != 5 && argc != 6)
+	{
+		print_usage();
+		return (0);
+	}
+	if (!check_int(argc, argv))
+		return (0);
+	if (!check_range(argc, argv))
+		return (0);
+	init_table(argc, argv, &table);
 	init_mutex(&table);
 	create_philos(&table);
 	monitor(&table);
