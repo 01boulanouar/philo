@@ -6,7 +6,7 @@
 /*   By: moboulan <moboulan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 04:23:28 by moboulan          #+#    #+#             */
-/*   Updated: 2025/01/23 22:03:33 by moboulan         ###   ########.fr       */
+/*   Updated: 2025/01/23 22:06:24 by moboulan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,5 +128,6 @@ int	main(int argc, char **argv)
 	init_mutex(&table);
 	create_philos(&table);
 	monitor(&table);
+	destroy_mutex(&table);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: moboulan <moboulan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/01 18:52:52 by moboulan          #+#    #+#             */
-/*   Updated: 2025/01/23 22:02:19 by moboulan         ###   ########.fr       */
+/*   Updated: 2025/01/23 22:06:05 by moboulan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,20 @@ void	init_mutex(t_table *table)
 			ft_error("failed to create fork mutex");
 		i++;
 	}
+}
+
+void	destroy_mutex(t_table *table)
+{
+	int	i;
+
+	i = 0;
+	while (i < table->n_philo)
+	{
+		pthread_mutex_destroy(&table->forks[i]);
+		i++;
+	}
+	pthread_mutex_destroy(&table->print);
+	pthread_mutex_destroy(&table->meal);
 }
 
 time_t	get_time(void)

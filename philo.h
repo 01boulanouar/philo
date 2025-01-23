@@ -6,7 +6,7 @@
 /*   By: moboulan <moboulan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 04:23:42 by moboulan          #+#    #+#             */
-/*   Updated: 2025/01/23 22:02:35 by moboulan         ###   ########.fr       */
+/*   Updated: 2025/01/23 22:06:39 by moboulan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ int					check_int(int argc, char **argv);
 int					check_range(int argc, char **argv);
 void				init_table(int argc, char **argv, t_table *table);
 
-int					philo_dead(t_table *table);
 void				init_mutex(t_table *table);
 void				destroy_mutex(t_table *table);
 void				*routine(void *context);
