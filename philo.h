@@ -6,7 +6,7 @@
 /*   By: moboulan <moboulan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 04:23:42 by moboulan          #+#    #+#             */
-/*   Updated: 2025/01/23 03:15:47 by moboulan         ###   ########.fr       */
+/*   Updated: 2025/01/23 05:50:53 by moboulan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@ typedef struct s_philo
 
 typedef struct s_table
 {
+	int				dead;
 	int				n_philo;
 	int				n_meals;
-	int				dead;
 	time_t			time_to_die;
 	time_t			time_to_eat;
 	time_t			time_to_sleep;
@@ -56,6 +56,7 @@ int					check_int(int argc, char **argv);
 int					check_range(int argc, char **argv);
 void				init_table(int argc, char **argv, t_table *table);
 
+int					philo_dead(t_table *table);
 void				init_mutex(t_table *table);
 void				destroy_mutex(t_table *table);
 void				*routine(void *context);

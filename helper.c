@@ -6,7 +6,7 @@
 /*   By: moboulan <moboulan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/01 18:52:52 by moboulan          #+#    #+#             */
-/*   Updated: 2025/01/23 03:13:55 by moboulan         ###   ########.fr       */
+/*   Updated: 2025/01/23 05:51:02 by moboulan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,20 +29,6 @@ void	init_mutex(t_table *table)
 	}
 }
 
-void	destroy_mutex(t_table *table)
-{
-	int	i;
-
-	i = 0;
-	while (i < table->n_philo)
-	{
-		pthread_mutex_destroy(&table->forks[i]);
-		i++;
-	}
-	pthread_mutex_destroy(&table->print);
-	pthread_mutex_destroy(&table->meal);
-}
-
 time_t	get_time(void)
 {
 	struct timeval	time;
@@ -54,15 +40,14 @@ time_t	get_time(void)
 void	print(char *action, t_philo *philo)
 {
 	t_table	*table;
+	int		dead;
 
 	table = philo->table;
 	pthread_mutex_lock(&table->meal);
-	if (table->dead)
-	{
-		pthread_mutex_unlock(&table->meal);
-		return ;
-	}
+	dead = table->dead;
 	pthread_mutex_unlock(&table->meal);
+	if (dead)
+		return ;
 	pthread_mutex_lock(&table->print);
 	printf("%ld %d %s\n", get_time() - table->start, philo->id + 1, action);
 	pthread_mutex_unlock(&table->print);

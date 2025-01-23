@@ -6,7 +6,7 @@
 /*   By: moboulan <moboulan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 04:23:28 by moboulan          #+#    #+#             */
-/*   Updated: 2025/01/23 03:23:41 by moboulan         ###   ########.fr       */
+/*   Updated: 2025/01/23 05:52:47 by moboulan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ void	create_philos(t_table *table)
 	int		i;
 	t_philo	*philo;
 
-	table->start = get_time();
 	table->dead = 0;
+	table->start = get_time();
 	i = 0;
 	while (i < table->n_philo)
 	{
@@ -54,9 +54,11 @@ void	create_philos(t_table *table)
 		philo->id = i;
 		philo->right = i;
 		philo->left = (i + 1) % table->n_philo;
+		pthread_mutex_lock(&table->meal);
 		philo->n_meals = 0;
-		philo->table = table;
 		philo->last_meal = get_time();
+		pthread_mutex_unlock(&table->meal);
+		philo->table = table;
 		if (pthread_create(&philo->thread, NULL, routine, philo))
 			ft_error("failed to create philo thread");
 		if (pthread_detach(table->philos[i].thread))
@@ -86,6 +88,7 @@ int	done_eating(t_table *table)
 void	monitor(t_table *table)
 {
 	int		i;
+	time_t	last_meal;
 
 	while (1)
 	{
@@ -95,17 +98,19 @@ void	monitor(t_table *table)
 		while (i < table->n_philo)
 		{
 			pthread_mutex_lock(&table->meal);
-			if (get_time() >= table->philos[i].last_meal + table->time_to_die)
-			{
-				table->dead++;
-				if (table->dead == 1)
-					printf("%ld %d died\n", get_time() - table->start, i + 1);
-			}
+			last_meal = table->philos[i].last_meal;
 			pthread_mutex_unlock(&table->meal);
+			if (get_time() >= last_meal + table->time_to_die)
+			{
+				pthread_mutex_lock(&table->meal);
+				table->dead++;
+				pthread_mutex_unlock(&table->meal);
+				printf("%ld %d dead\n", get_time() - table->start, i + 1);
+				ft_usleep(1000);
+				return ;
+			}
 			i++;
 		}
-		if (table->dead >= table->n_philo)
-			return ;
 	}
 }
 
@@ -126,6 +131,5 @@ int	main(int argc, char **argv)
 	init_mutex(&table);
 	create_philos(&table);
 	monitor(&table);
-	destroy_mutex(&table);
 	return (0);
 }
