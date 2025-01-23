@@ -6,7 +6,7 @@
 /*   By: moboulan <moboulan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/01 18:52:52 by moboulan          #+#    #+#             */
-/*   Updated: 2025/01/23 03:02:18 by moboulan         ###   ########.fr       */
+/*   Updated: 2025/01/23 03:13:55 by moboulan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	print(char *action, t_philo *philo)
 
 	table = philo->table;
 	pthread_mutex_lock(&table->meal);
-	if (table->end)
+	if (table->dead)
 	{
 		pthread_mutex_unlock(&table->meal);
 		return ;

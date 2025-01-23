@@ -11,10 +11,10 @@ OBJ = $(SRC:.c=.o)
 all : $(NAME)
 
 $(NAME) : $(OBJ)
-	$(CC) $(OBJ) -o $@
+	$(CC) $(OBJ) -o $@ -fsanitize=thread -g
 
 %.o : %.c philo.h
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@ -fsanitize=thread -g
 
 clean :
 	$(RM) $(OBJ)
