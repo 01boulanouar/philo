@@ -6,7 +6,7 @@
 /*   By: moboulan <moboulan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 04:23:42 by moboulan          #+#    #+#             */
-/*   Updated: 2025/01/21 05:11:01 by moboulan         ###   ########.fr       */
+/*   Updated: 2025/01/23 02:57:08 by moboulan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ typedef struct s_philo
 	pthread_t		thread;
 	time_t			last_meal;
 	int				n_meals;
+	int				dead;
 	int				right;
 	int				left;
 	struct s_table	*table;
@@ -34,6 +35,7 @@ typedef struct s_table
 {
 	int				n_philo;
 	int				n_meals;
+	int				end;
 	time_t			time_to_die;
 	time_t			time_to_eat;
 	time_t			time_to_sleep;
