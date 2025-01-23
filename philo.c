@@ -6,7 +6,7 @@
 /*   By: moboulan <moboulan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 04:23:28 by moboulan          #+#    #+#             */
-/*   Updated: 2025/01/23 05:52:47 by moboulan         ###   ########.fr       */
+/*   Updated: 2025/01/23 22:03:33 by moboulan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ void	create_philos(t_table *table)
 	int		i;
 	t_philo	*philo;
 
-	table->dead = 0;
 	table->start = get_time();
 	i = 0;
 	while (i < table->n_philo)
@@ -102,10 +101,8 @@ void	monitor(t_table *table)
 			pthread_mutex_unlock(&table->meal);
 			if (get_time() >= last_meal + table->time_to_die)
 			{
-				pthread_mutex_lock(&table->meal);
-				table->dead++;
-				pthread_mutex_unlock(&table->meal);
-				printf("%ld %d dead\n", get_time() - table->start, i + 1);
+				pthread_mutex_lock(&table->print);
+				printf("%ld %d died\n", get_time() - table->start, i + 1);
 				ft_usleep(1000);
 				return ;
 			}

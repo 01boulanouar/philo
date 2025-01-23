@@ -6,7 +6,7 @@
 /*   By: moboulan <moboulan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/01 18:52:52 by moboulan          #+#    #+#             */
-/*   Updated: 2025/01/23 05:51:02 by moboulan         ###   ########.fr       */
+/*   Updated: 2025/01/23 22:02:19 by moboulan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,14 +40,8 @@ time_t	get_time(void)
 void	print(char *action, t_philo *philo)
 {
 	t_table	*table;
-	int		dead;
 
 	table = philo->table;
-	pthread_mutex_lock(&table->meal);
-	dead = table->dead;
-	pthread_mutex_unlock(&table->meal);
-	if (dead)
-		return ;
 	pthread_mutex_lock(&table->print);
 	printf("%ld %d %s\n", get_time() - table->start, philo->id + 1, action);
 	pthread_mutex_unlock(&table->print);
