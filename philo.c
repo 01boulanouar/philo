@@ -6,7 +6,7 @@
 /*   By: moboulan <moboulan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 04:23:28 by moboulan          #+#    #+#             */
-/*   Updated: 2025/01/23 22:06:24 by moboulan         ###   ########.fr       */
+/*   Updated: 2025/01/24 19:50:00 by moboulan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ void	monitor(t_table *table)
 			{
 				pthread_mutex_lock(&table->print);
 				printf("%ld %d died\n", get_time() - table->start, i + 1);
-				ft_usleep(1000);
+				ft_usleep(500);
 				return ;
 			}
 			i++;
